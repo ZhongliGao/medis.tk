@@ -24,8 +24,8 @@ type Responder<T> = oneshot::Sender<mini_redis::Result<T>>;
 #[tokio::main]
 async fn main() {
     // create a new channel with a capacity of most 32
-    let (mut tx, mut rx) = mpsc::channel(32);
-    let mut tx2 = tx.clone();
+    let (tx, mut rx) = mpsc::channel(32);
+    let tx2 = tx.clone();
 
     // `move` the ownership of `rx` into the task
     let manager = tokio::spawn(async move {
