@@ -8,7 +8,7 @@ use std::sync::{Arc, Mutex};
 /// Server state shared across all connections.
 ///
 /// `Db` contains a `HashMap` storing the key/value data and all
-/// `broadcat::Sender` values for active pub/sub channels.
+/// `broadcast::Sender` values for active pub/sub channels.
 ///
 /// A `Db` instance is a handle to shared state. Cloning `Db` is shallow and
 /// only incurs an atomic ref count increment.
@@ -19,7 +19,7 @@ use std::sync::{Arc, Mutex};
 /// terminates.
 #[derive(Debug, Clone)]
 pub(crate) struct Db {
-    /// Handle to shared state, the background task will also have an
+    /// Handle to shared state. The background task will also have an
     /// `Arc<Shared>`.
     shared: Arc<Shared>,
 }
@@ -94,7 +94,7 @@ struct Entry {
 
 impl Db {
     /// Create a new, empty, `Db` instance. Allocates shared state and spawns a
-    /// background task to manage key expiration
+    /// background task to manage key expiration.
     pub(crate) fn new() -> Db {
         let shared = Arc::new(Shared {
             state: Mutex::new(State {
@@ -158,12 +158,12 @@ impl Db {
                 .map(|expiration| expiration > when)
                 .unwrap_or(true);
 
-            // Track the expiration
+            // Track the expiration.
             state.expirations.insert((when, id), key.clone());
             when
         });
 
-        // Insert the entry into the `HashMap`
+        // Insert the entry into the `HashMap`.
         let prev = state.entries.insert(
             key,
             Entry {
